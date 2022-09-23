@@ -3,7 +3,6 @@ A Todo Task App build using react and laravel.
 ### 1. Clone the repository and install dependencies
 
 ```
-git clone https://github.com/alokpaidalwar/react-laravel-todo.git
 cd todoapp
 npm install
 composer update
