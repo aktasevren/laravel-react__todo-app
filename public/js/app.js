@@ -5908,10 +5908,10 @@ var Pagination = function Pagination(_ref) {
 
 /***/ }),
 
-/***/ "./resources/js/components/Records.js":
-/*!********************************************!*\
-  !*** ./resources/js/components/Records.js ***!
-  \********************************************/
+/***/ "./resources/js/components/TaskList.js":
+/*!*********************************************!*\
+  !*** ./resources/js/components/TaskList.js ***!
+  \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -5921,12 +5921,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/Card.js");
-/* harmony import */ var _singleTask__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./singleTask */ "./resources/js/components/singleTask.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/Toast.js");
+/* harmony import */ var _AddTask__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./AddTask */ "./resources/js/components/AddTask.js");
+/* harmony import */ var _Pagination__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Pagination */ "./resources/js/components/Pagination.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -5952,64 +5954,101 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-function Records(_ref) {
-  var tasks = _ref.tasks;
-  //////////////////////////////////////
-  var dataList = tasks;
 
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(""),
+
+function TaskList() {
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]),
       _useState2 = _slicedToArray(_useState, 2),
-      searchText = _useState2[0],
-      setSearchText = _useState2[1];
+      tasks = _useState2[0],
+      setTasks = _useState2[1];
 
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(dataList),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]),
       _useState4 = _slicedToArray(_useState3, 2),
       data = _useState4[0],
       setData = _useState4[1];
 
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]),
+      _useState6 = _slicedToArray(_useState5, 2),
+      updateData = _useState6[0],
+      setupdateData = _useState6[1];
+
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
+      _useState8 = _slicedToArray(_useState7, 2),
+      showToast = _useState8[0],
+      setShowToast = _useState8[1];
+
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
+      _useState10 = _slicedToArray(_useState9, 2),
+      loadingAddTask = _useState10[0],
+      setLoadingAddTask = _useState10[1];
+
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
+      _useState12 = _slicedToArray(_useState11, 2),
+      loadingGetTask = _useState12[0],
+      setLoadingGetTask = _useState12[1];
+
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(""),
+      _useState14 = _slicedToArray(_useState13, 2),
+      searchText = _useState14[0],
+      setSearchText = _useState14[1];
+
+  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(1),
+      _useState16 = _slicedToArray(_useState15, 2),
+      currentPage = _useState16[0],
+      setCurrentPage = _useState16[1];
+
+  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(10),
+      _useState18 = _slicedToArray(_useState17, 1),
+      recordsPerPage = _useState18[0];
+
+  var indexOfLastRecord = currentPage * recordsPerPage;
+  var indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  var currentRecords = tasks.slice(indexOfFirstRecord, indexOfLastRecord);
+  var nPages = Math.ceil(tasks.length / recordsPerPage);
   var excludeColumns = ["id", "user_id", "updated_at", "created_at"];
+  (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
+    getTask();
+  }, []);
 
   var handleChange = function handleChange(value) {
     setSearchText(value);
     filterData(value);
   };
 
+  var updateChange = function updateChange(value) {
+    setupdateData(value);
+  };
+
   var filterData = function filterData(value) {
     var lowercasedValue = value.toLowerCase().trim();
-    if (lowercasedValue === "") setData(dataList);else {
-      var filteredData = dataList.filter(function (item) {
+    if (lowercasedValue === "") setData(tasks);else {
+      var filteredData = tasks.filter(function (item) {
         return Object.keys(item).some(function (key) {
           return excludeColumns.includes(key) ? false : item[key].toString().toLowerCase().includes(lowercasedValue);
         });
       });
       setData(filteredData);
     }
-  }; //////////////////////////////////////
-
-
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)([]),
-      _useState6 = _slicedToArray(_useState5, 2),
-      task = _useState6[0],
-      setTask = _useState6[1];
-
-  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_3__.useState)(false),
-      _useState8 = _slicedToArray(_useState7, 2),
-      loadingGetTask = _useState8[0],
-      setLoadingGetTask = _useState8[1];
+  };
 
   var getTask = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               setLoadingGetTask(true);
-              return _context.abrupt("return", axios__WEBPACK_IMPORTED_MODULE_2___default().get("/api/tasks").then(function (response) {
-                setTask(response.data);
+              _context.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_3___default().get("/api/tasks").then(function (response) {
+                setTasks(response.data);
+                setData(response.data);
                 setLoadingGetTask(false);
-              }));
+              });
 
-            case 2:
+            case 3:
+              return _context.abrupt("return", _context.sent);
+
+            case 4:
             case "end":
               return _context.stop();
           }
@@ -6018,149 +6057,69 @@ function Records(_ref) {
     }));
 
     return function getTask() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  var removeTask = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(index) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              setLoadingGetTask(true);
+              _context2.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_3___default()["delete"]("/api/tasks/".concat(index)).then(function (response) {
+                getTask();
+              })["catch"](function (error) {
+                console.log(error);
+              });
+
+            case 3:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+
+    return function removeTask(_x) {
       return _ref2.apply(this, arguments);
     };
   }();
 
-  var removeTask = function removeTask(index) {
-    setLoadingGetTask(true);
-    axios__WEBPACK_IMPORTED_MODULE_2___default()["delete"]("/api/tasks/".concat(index)).then(function (response) {
-      getTask();
-    })["catch"](function (error) {
-      console.log(error);
-    });
-  };
+  var updateTask = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(index) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              setLoadingGetTask(true);
+              _context3.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_3___default().put("/api/tasks/".concat(index), {
+                title: updateData
+              }).then(function (response) {
+                getTask();
+              })["catch"](function (error) {
+                console.log(error);
+              });
 
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-    className: "App",
-    children: ["Search Todo :", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
-      style: {
-        marginLeft: 5
-      },
-      type: "text",
-      placeholder: "Type to search...",
-      value: searchText,
-      onChange: function onChange(e) {
-        return handleChange(e.target.value);
-      }
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
-      children: data.map(function (task, index) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(react_bootstrap__WEBPACK_IMPORTED_MODULE_5__["default"], {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(react_bootstrap__WEBPACK_IMPORTED_MODULE_5__["default"].Body, {
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_singleTask__WEBPACK_IMPORTED_MODULE_1__["default"], {
-              index: task.id,
-              task: task,
-              removeTask: removeTask
-            }, index)
-          })
-        }, index);
-      })
-    })]
-  });
-}
+            case 3:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }));
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Records);
-
-/***/ }),
-
-/***/ "./resources/js/components/TaskList.js":
-/*!*********************************************!*\
-  !*** ./resources/js/components/TaskList.js ***!
-  \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/Toast.js");
-/* harmony import */ var _singleTask__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./singleTask */ "./resources/js/components/singleTask.js");
-/* harmony import */ var _AddTask__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./AddTask */ "./resources/js/components/AddTask.js");
-/* harmony import */ var _Records__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Records */ "./resources/js/components/Records.js");
-/* harmony import */ var _Pagination__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Pagination */ "./resources/js/components/Pagination.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-
-
-
-
-
-
-
-
-
-
-
-function TaskList() {
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
-      _useState2 = _slicedToArray(_useState, 2),
-      tasks = _useState2[0],
-      setTasks = _useState2[1];
-
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
-      _useState4 = _slicedToArray(_useState3, 2),
-      showToast = _useState4[0],
-      setShowToast = _useState4[1];
-
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
-      _useState6 = _slicedToArray(_useState5, 2),
-      loadingAddTask = _useState6[0],
-      setLoadingAddTask = _useState6[1];
-
-  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
-      _useState8 = _slicedToArray(_useState7, 2),
-      loadingGetTask = _useState8[0],
-      setLoadingGetTask = _useState8[1]; // User is currently on this page
-
-
-  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1),
-      _useState10 = _slicedToArray(_useState9, 2),
-      currentPage = _useState10[0],
-      setCurrentPage = _useState10[1]; // No of Records to be displayed on each page
-
-
-  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(10),
-      _useState12 = _slicedToArray(_useState11, 1),
-      recordsPerPage = _useState12[0];
-
-  var indexOfLastRecord = currentPage * recordsPerPage;
-  var indexOfFirstRecord = indexOfLastRecord - recordsPerPage; // Records to be displayed on the current page
-
-  var currentRecords = tasks.slice(indexOfFirstRecord, indexOfLastRecord);
-  var nPages = Math.ceil(tasks.length / recordsPerPage);
-
-  var getTask = function getTask() {
-    setLoadingGetTask(true);
-    return axios__WEBPACK_IMPORTED_MODULE_2___default().get("/api/tasks").then(function (response) {
-      setTasks(response.data);
-      setLoadingGetTask(false);
-    });
-  };
-
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    console.log(tasks);
-    getTask();
-  }, []);
+    return function updateTask(_x2) {
+      return _ref3.apply(this, arguments);
+    };
+  }();
 
   var addTask = function addTask(text) {
     setLoadingAddTask(true);
-    axios__WEBPACK_IMPORTED_MODULE_2___default().post("/api/tasks", {
+    axios__WEBPACK_IMPORTED_MODULE_3___default().post("/api/tasks", {
       title: text
     }).then(function (response) {
       setShowToast(true);
@@ -6171,18 +6130,18 @@ function TaskList() {
     });
   };
 
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
     className: "app",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
       className: "container",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("h1", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("h1", {
         className: "text-center mb-4",
         children: "Todo List"
-      }), loadingAddTask ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+      }), loadingAddTask ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
         children: "Adding the task...Please Wait !"
-      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_AddTask__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_AddTask__WEBPACK_IMPORTED_MODULE_4__["default"], {
         addTask: addTask
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_bootstrap__WEBPACK_IMPORTED_MODULE_8__["default"], {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__["default"], {
         onClose: function onClose() {
           return setShowToast(false);
         },
@@ -6190,15 +6149,61 @@ function TaskList() {
         delay: 2000,
         autohide: true,
         bg: "info",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_bootstrap__WEBPACK_IMPORTED_MODULE_8__["default"].Body, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__["default"].Body, {
           children: "New Task Added!"
         })
-      }), loadingGetTask ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("p", {
+      }), loadingGetTask ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
         children: "Loading...Please Wait !"
-      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_Records__WEBPACK_IMPORTED_MODULE_5__["default"], {
-          tasks: currentRecords
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(_Pagination__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("h5", {
+            children: "Search Todo :"
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
+          className: "mt-2 mb-3",
+          type: "text",
+          placeholder: "Type to search...",
+          value: searchText,
+          onChange: function onChange(e) {
+            return handleChange(e.target.value);
+          }
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+          children: data.map(function (task, index) {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+                "class": "input-group my-2",
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("textarea", {
+                  onChange: function onChange(e) {
+                    return updateChange(e.target.value);
+                  },
+                  type: "text",
+                  "class": "form-control",
+                  children: task.title
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+                  "class": "input-group-append",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+                    "class": "btn btn-outline-dark",
+                    onClick: function onClick() {
+                      return updateTask(task.id);
+                    },
+                    type: "button",
+                    children: "Update"
+                  })
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+                  "class": "input-group-append",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("button", {
+                    "class": "btn btn-outline-danger",
+                    onClick: function onClick() {
+                      return removeTask(task.id);
+                    },
+                    type: "button",
+                    children: "Delete"
+                  })
+                })]
+              })
+            }, index);
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_Pagination__WEBPACK_IMPORTED_MODULE_5__["default"], {
           nPages: nPages,
           currentPage: currentPage,
           setCurrentPage: setCurrentPage
@@ -6211,55 +6216,8 @@ function TaskList() {
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TaskList);
 
 if (document.getElementById("tasklist")) {
-  react_dom__WEBPACK_IMPORTED_MODULE_1__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(TaskList, {}), document.getElementById("tasklist"));
+  react_dom__WEBPACK_IMPORTED_MODULE_2__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(TaskList, {}), document.getElementById("tasklist"));
 }
-
-/***/ }),
-
-/***/ "./resources/js/components/singleTask.js":
-/*!***********************************************!*\
-  !*** ./resources/js/components/singleTask.js ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/Button.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
-
-
-
-
-function SingleTask(_ref) {
-  var task = _ref.task,
-      index = _ref.index,
-      removeTask = _ref.removeTask;
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-      className: "row",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-        className: "col-10",
-        children: task.title
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-        className: "col-2 text-right",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__["default"], {
-          variant: "outline-danger",
-          onClick: function onClick() {
-            return removeTask(index);
-          },
-          children: "\u2715"
-        })
-      })]
-    })
-  }, index);
-}
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SingleTask);
 
 /***/ }),
 
@@ -30140,199 +30098,6 @@ Button.defaultProps = defaultProps;
 
 /***/ }),
 
-/***/ "./node_modules/react-bootstrap/esm/Card.js":
-/*!**************************************************!*\
-  !*** ./node_modules/react-bootstrap/esm/Card.js ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var _ThemeProvider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ThemeProvider */ "./node_modules/react-bootstrap/esm/ThemeProvider.js");
-/* harmony import */ var _createWithBsPrefix__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./createWithBsPrefix */ "./node_modules/react-bootstrap/esm/createWithBsPrefix.js");
-/* harmony import */ var _divWithClassName__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./divWithClassName */ "./node_modules/react-bootstrap/esm/divWithClassName.js");
-/* harmony import */ var _CardImg__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./CardImg */ "./node_modules/react-bootstrap/esm/CardImg.js");
-/* harmony import */ var _CardHeader__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./CardHeader */ "./node_modules/react-bootstrap/esm/CardHeader.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
-
-
-
-
-
-
-
-const DivStyledAsH5 = (0,_divWithClassName__WEBPACK_IMPORTED_MODULE_3__["default"])('h5');
-const DivStyledAsH6 = (0,_divWithClassName__WEBPACK_IMPORTED_MODULE_3__["default"])('h6');
-const CardBody = (0,_createWithBsPrefix__WEBPACK_IMPORTED_MODULE_4__["default"])('card-body');
-const CardTitle = (0,_createWithBsPrefix__WEBPACK_IMPORTED_MODULE_4__["default"])('card-title', {
-  Component: DivStyledAsH5
-});
-const CardSubtitle = (0,_createWithBsPrefix__WEBPACK_IMPORTED_MODULE_4__["default"])('card-subtitle', {
-  Component: DivStyledAsH6
-});
-const CardLink = (0,_createWithBsPrefix__WEBPACK_IMPORTED_MODULE_4__["default"])('card-link', {
-  Component: 'a'
-});
-const CardText = (0,_createWithBsPrefix__WEBPACK_IMPORTED_MODULE_4__["default"])('card-text', {
-  Component: 'p'
-});
-const CardFooter = (0,_createWithBsPrefix__WEBPACK_IMPORTED_MODULE_4__["default"])('card-footer');
-const CardImgOverlay = (0,_createWithBsPrefix__WEBPACK_IMPORTED_MODULE_4__["default"])('card-img-overlay');
-const defaultProps = {
-  body: false
-};
-const Card = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.forwardRef(({
-  bsPrefix,
-  className,
-  bg,
-  text,
-  border,
-  body,
-  children,
-  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  as: Component = 'div',
-  ...props
-}, ref) => {
-  const prefix = (0,_ThemeProvider__WEBPACK_IMPORTED_MODULE_5__.useBootstrapPrefix)(bsPrefix, 'card');
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Component, {
-    ref: ref,
-    ...props,
-    className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(className, prefix, bg && `bg-${bg}`, text && `text-${text}`, border && `border-${border}`),
-    children: body ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(CardBody, {
-      children: children
-    }) : children
-  });
-});
-Card.displayName = 'Card';
-Card.defaultProps = defaultProps;
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Object.assign(Card, {
-  Img: _CardImg__WEBPACK_IMPORTED_MODULE_6__["default"],
-  Title: CardTitle,
-  Subtitle: CardSubtitle,
-  Body: CardBody,
-  Link: CardLink,
-  Text: CardText,
-  Header: _CardHeader__WEBPACK_IMPORTED_MODULE_7__["default"],
-  Footer: CardFooter,
-  ImgOverlay: CardImgOverlay
-}));
-
-/***/ }),
-
-/***/ "./node_modules/react-bootstrap/esm/CardHeader.js":
-/*!********************************************************!*\
-  !*** ./node_modules/react-bootstrap/esm/CardHeader.js ***!
-  \********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var _ThemeProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ThemeProvider */ "./node_modules/react-bootstrap/esm/ThemeProvider.js");
-/* harmony import */ var _CardHeaderContext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CardHeaderContext */ "./node_modules/react-bootstrap/esm/CardHeaderContext.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
-
-
-
-
-
-const CardHeader = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.forwardRef(({
-  bsPrefix,
-  className,
-  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  as: Component = 'div',
-  ...props
-}, ref) => {
-  const prefix = (0,_ThemeProvider__WEBPACK_IMPORTED_MODULE_3__.useBootstrapPrefix)(bsPrefix, 'card-header');
-  const contextValue = (0,react__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => ({
-    cardHeaderBsPrefix: prefix
-  }), [prefix]);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_CardHeaderContext__WEBPACK_IMPORTED_MODULE_4__["default"].Provider, {
-    value: contextValue,
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Component, {
-      ref: ref,
-      ...props,
-      className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(className, prefix)
-    })
-  });
-});
-CardHeader.displayName = 'CardHeader';
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CardHeader);
-
-/***/ }),
-
-/***/ "./node_modules/react-bootstrap/esm/CardHeaderContext.js":
-/*!***************************************************************!*\
-  !*** ./node_modules/react-bootstrap/esm/CardHeaderContext.js ***!
-  \***************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-const context = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(null);
-context.displayName = 'CardHeaderContext';
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (context);
-
-/***/ }),
-
-/***/ "./node_modules/react-bootstrap/esm/CardImg.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/react-bootstrap/esm/CardImg.js ***!
-  \*****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var _ThemeProvider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ThemeProvider */ "./node_modules/react-bootstrap/esm/ThemeProvider.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
-
-
-
-const CardImg = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.forwardRef( // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-({
-  bsPrefix,
-  className,
-  variant,
-  as: Component = 'img',
-  ...props
-}, ref) => {
-  const prefix = (0,_ThemeProvider__WEBPACK_IMPORTED_MODULE_3__.useBootstrapPrefix)(bsPrefix, 'card-img');
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Component, {
-    ref: ref,
-    className: classnames__WEBPACK_IMPORTED_MODULE_0___default()(variant ? `${prefix}-${variant}` : prefix, className),
-    ...props
-  });
-});
-CardImg.displayName = 'CardImg';
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CardImg);
-
-/***/ }),
-
 /***/ "./node_modules/react-bootstrap/esm/CloseButton.js":
 /*!*********************************************************!*\
   !*** ./node_modules/react-bootstrap/esm/CloseButton.js ***!
@@ -31793,31 +31558,6 @@ function createWithBsPrefix(prefix, {
   BsComponent.displayName = displayName;
   return BsComponent;
 }
-
-/***/ }),
-
-/***/ "./node_modules/react-bootstrap/esm/divWithClassName.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/react-bootstrap/esm/divWithClassName.js ***!
-  \**************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
-/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (className => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.forwardRef((p, ref) => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", { ...p,
-  ref: ref,
-  className: classnames__WEBPACK_IMPORTED_MODULE_1___default()(p.className, className)
-})));
 
 /***/ }),
 

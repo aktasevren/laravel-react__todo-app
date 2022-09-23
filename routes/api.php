@@ -18,6 +18,7 @@ use App\Http\Controllers\TaskApiController;
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('tasks', [TaskApiController::class, 'index']);
     Route::post('tasks', [TaskApiController::class, 'store']);
+    Route::put('tasks/{id}', [TaskApiController::class, 'update']);
     Route::delete('tasks/{id}', [TaskApiController::class, 'delete']);
 });
 

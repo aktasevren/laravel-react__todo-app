@@ -1,41 +1,89 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
-import { Card, Toast } from "react-bootstrap";
-import SingleTask from "./singleTask";
+import { Toast } from "react-bootstrap";
 import AddTask from "./AddTask";
-import Records from "./Records";
 import Pagination from "./Pagination";
 
 function TaskList() {
+
     const [tasks, setTasks] = useState([]);
+    const [data, setData] = useState([]);
+    const [updateData, setupdateData] = useState([]);
     const [showToast, setShowToast] = useState(false);
     const [loadingAddTask, setLoadingAddTask] = useState(false);
     const [loadingGetTask, setLoadingGetTask] = useState(false);
-
-    // User is currently on this page
-    const [currentPage, setCurrentPage] = useState(1); // No of Records to be displayed on each page
+    const [searchText, setSearchText] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
     const [recordsPerPage] = useState(10);
-
     const indexOfLastRecord = currentPage * recordsPerPage;
     const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-    // Records to be displayed on the current page
     const currentRecords = tasks.slice(indexOfFirstRecord, indexOfLastRecord);
     const nPages = Math.ceil(tasks.length / recordsPerPage);
+    const excludeColumns = ["id", "user_id", "updated_at", "created_at"];
 
-    const getTask = () => {
+
+    useEffect(() => {
+        getTask();
+    }, []);
+
+    const handleChange = (value) => {
+        setSearchText(value);
+        filterData(value);
+    };
+
+    const updateChange = (value) => {
+        setupdateData(value)
+    };
+    const filterData = (value) => {
+        const lowercasedValue = value.toLowerCase().trim();
+        if (lowercasedValue === "") setData(tasks);
+        else {
+            const filteredData = tasks.filter((item) => {
+                return Object.keys(item).some((key) =>
+                    excludeColumns.includes(key)
+                        ? false
+                        : item[key]
+                            .toString()
+                            .toLowerCase()
+                            .includes(lowercasedValue)
+                );
+            });
+            setData(filteredData);
+        }
+    };
+    const getTask = async () => {
         setLoadingGetTask(true);
-        return axios.get("/api/tasks").then((response) => {
+        return await axios.get("/api/tasks").then((response) => {
             setTasks(response.data);
+            setData(response.data)
             setLoadingGetTask(false);
         });
     };
 
-    useEffect(() => {
-        console.log(tasks)
-        getTask();
-    }, []);
+    const removeTask = async (index) => {
+        setLoadingGetTask(true);
+        await axios
+            .delete(`/api/tasks/${index}`)
+            .then((response) => {
+                getTask()
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
 
+    const updateTask = async (index) => {
+        setLoadingGetTask(true);
+        await axios
+            .put(`/api/tasks/${index}`, { title: updateData })
+            .then((response) => {
+                getTask()
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
     const addTask = (text) => {
         setLoadingAddTask(true);
         axios
@@ -72,7 +120,31 @@ function TaskList() {
                     <p>Loading...Please Wait !</p>
                 ) : (
                     <div>
-                        <Records tasks={currentRecords} />
+                        <div><h5>Search Todo :</h5></div>
+
+                        <input
+                            className="mt-2 mb-3"
+                            type="text"
+                            placeholder="Type to search..."
+                            value={searchText}
+                            onChange={(e) => handleChange(e.target.value)}
+                        />
+                        <div>
+                            {data.map((task, index) => (
+                                <div key={index}>
+                                    <div class="input-group my-2">
+                                        <textarea onChange={(e) => updateChange(e.target.value)} type="text" class="form-control">{task.title}</textarea>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-dark" onClick={() => updateTask(task.id)} type="button">Update</button>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-danger" onClick={() => removeTask(task.id)} type="button">Delete</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                         <Pagination
                             nPages={nPages}
                             currentPage={currentPage}
@@ -82,6 +154,12 @@ function TaskList() {
                 )}
             </div>
         </div>
+
+
+
+
+
+
     );
 }
 

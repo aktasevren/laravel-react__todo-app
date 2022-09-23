@@ -51,6 +51,16 @@ class TaskApiController extends Controller
         return response()->json('Task created!');
     }
 
+    public function update(Request $request,$id){
+        $validatedData = $request->validate([
+            'title' => 'required',
+          ]);
+
+        $task = Task::findOrFail($id);
+        $task->update($validatedData);
+        return response()->json('Task updated!');
+    }
+
     /**
      * Delete the task by id.
      */
