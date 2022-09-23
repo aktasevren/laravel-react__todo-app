@@ -4,20 +4,20 @@ A Todo Task App build using react and laravel.
 
 ```
 git clone https://github.com/alokpaidalwar/react-laravel-todo.git
-cd react-laravel-todo
+cd todoapp
 npm install
-composer install
+composer update
 php artisan key:generate
 ```
 
 ### 2. Configure your local environment
 
-Add DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD in .env file
+Add DB_DATABASE .env file
 
 ### 3. Run database migration command
 
 ```
-php artisan migrate
+php artisan migrate --seed
 ```
 
 ### 3. Start the application locally
