@@ -23,4 +23,5 @@ php artisan migrate --seed
 
 ```
 php artisan serve
+npm run watch
 ```
