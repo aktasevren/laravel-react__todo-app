@@ -1,9 +1,10 @@
 A Todo Task App build using react and laravel.
 
 
-####Admin Info
-admin@admin.com
-admin1234
+#### Admin Info
+admin@admin.com // admin1234
+
+
 ### 1. Clone the repository and install dependencies
 
 ```
