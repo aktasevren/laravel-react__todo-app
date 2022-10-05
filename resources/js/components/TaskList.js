@@ -1,35 +1,54 @@
 import React, { useEffect, useState } from "react";
+import alertifyjs from 'alertifyjs';
 import ReactDOM from "react-dom";
 import axios from "axios";
 import { Toast } from "react-bootstrap";
 import AddTask from "./AddTask";
 import Pagination from "./Pagination";
 
+
+
 function TaskList() {
 
     const [tasks, setTasks] = useState([]);
+
     const [data, setData] = useState([]);
+
+
     const [updateData, setupdateData] = useState([]);
     const [showToast, setShowToast] = useState(false);
     const [loadingAddTask, setLoadingAddTask] = useState(false);
     const [loadingGetTask, setLoadingGetTask] = useState(false);
     const [searchText, setSearchText] = useState("");
+    //PAGINATION
     const [currentPage, setCurrentPage] = useState(1);
     const [recordsPerPage] = useState(10);
     const indexOfLastRecord = currentPage * recordsPerPage;
     const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-    const currentRecords = tasks.slice(indexOfFirstRecord, indexOfLastRecord);
+    const currentRecords = data.slice(indexOfFirstRecord, indexOfLastRecord);
     const nPages = Math.ceil(tasks.length / recordsPerPage);
     const excludeColumns = ["id", "user_id", "updated_at", "created_at"];
+    //PAGINATION
 
 
     useEffect(() => {
         getTask();
     }, []);
 
-    const handleChange = (value) => {
-        setSearchText(value);
-        filterData(value);
+    const getTask = async () => {
+        setLoadingGetTask(true);
+        return await axios.get("/api/tasks").then((response) => {
+            setTasks(response.data);
+            setData(response.data)
+            setLoadingGetTask(false);
+        });
+    };
+
+
+
+    const handleChange = (searchValue) => {
+        setSearchText(searchValue);
+        filterData(searchValue);
     };
 
     const updateChange = (value) => {
@@ -52,21 +71,15 @@ function TaskList() {
             setData(filteredData);
         }
     };
-    const getTask = async () => {
-        setLoadingGetTask(true);
-        return await axios.get("/api/tasks").then((response) => {
-            setTasks(response.data);
-            setData(response.data)
-            setLoadingGetTask(false);
-        });
-    };
+
 
     const removeTask = async (index) => {
         setLoadingGetTask(true);
         await axios
             .delete(`/api/tasks/${index}`)
             .then((response) => {
-                getTask()
+                console.log(response.data);
+                getTask();
             })
             .catch((error) => {
                 console.log(error);
@@ -130,10 +143,10 @@ function TaskList() {
                             onChange={(e) => handleChange(e.target.value)}
                         />
                         <div>
-                            {data.map((task, index) => (
+                            {currentRecords.map((task, index) => (
                                 <div key={index}>
                                     <div class="input-group my-2">
-                                        <textarea onChange={(e) => updateChange(e.target.value)} type="text" class="form-control">{task.title}</textarea>
+                                        <textarea onChange={(e) => updateChange(e.target.value)} value={task.title} rows="1" type="text" class="form-control">{task.title}</textarea>
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-dark" onClick={() => updateTask(task.id)} type="button">Update</button>
                                         </div>
