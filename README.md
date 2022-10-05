@@ -16,7 +16,7 @@ php artisan key:generate
 
 ### 2. Configure your local environment
 
-Add DB_DATABASE .env file
+Create .env file from .env.example after add DB_DATABASE
 
 ### 3. Run database migration command
 
