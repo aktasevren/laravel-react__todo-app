@@ -8,7 +8,7 @@ admin@admin.com // admin1234
 ### 1. Clone the repository and install dependencies
 
 ```
-cd todoapp
+cd laravel-react__todo-app
 npm install
 composer update
 php artisan key:generate
